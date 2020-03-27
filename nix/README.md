@@ -1,5 +1,35 @@
 # Nix Packaging of ATW
 
+## In This Repo
+
+`atw.nix` is a barebones Nix recipe for building timewarp from source. To 
+run it, you will need to zip visual_postprocessing/src into a tar.gz file
+named `atw.tar.gz` and place it in `/nix/`.
+
+To zip source, run: `tar -czvf atw.tar.gz ../src/`
+
+Then, execute: `nix-build atw.nix` to build.
+
+This will download Nix recipes for all dependencies of ATW (listed below)
+as well as their development versions. It will then attempt to build ATW 
+within the Nix environment. We are also including `coreutils-full` to 
+get access to debug commands such as `stat` and `ls`.
+
+The Nix file will run `builder.sh` which is built on Nix Pill 8.2. 
+It is a barebones generic build script that will load all dependencies 
+into `PATH` as well as load all include directories into `CPATH` for gcc. 
+It will then print out all included directories visible to gcc for
+debugging purposes.
+
+Currently this Nix file can link `libpng` and `freeglut` to the ATW
+main program. There is an error in building `freeglut-dev` however, as
+`freeglut` relies on the file `<GL/gl.h>` which is not included with its
+Nix package. 
+
+On `apt`, the `libmesa-dev` package includes `<GL/gl.h>` 
+(as does `freeglut 3`), however, the Nix versions do not. This issue
+is currently being worked on.
+
 ## Nix Resources:
 Good introductory tutorial on intro to Nix lang + packages:
 
